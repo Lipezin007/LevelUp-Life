@@ -53,7 +53,60 @@ const ACTIVITIES = [
   { id: "trabalho", label: "Trabalho profundo", skill: "foco" },
 ];
 
+const activitySkillMap = {
+  "Estudar": {
+    estudo: 1.0,
+    foco: 0.6,
+    disciplina: 0.4,
+  },
+  "Treinar (musculação)": {
+    saude: 1.0,
+    disciplina: 0.5,
+    energia: 0.4,
+  },
+  "Cardio / corrida": {
+    saude: 1.0,
+    energia: 0.6,
+    disciplina: 0.3,
+  },
+  "Leitura": {
+    estudo: 0.7,
+    foco: 0.5,
+  },
+  "Meditação": {
+    foco: 1.0,
+    energia: 0.6,
+    saude: 0.4,
+  },
+  "Projeto criativo": {
+    criatividade: 1.0,
+    foco: 0.5,
+    disciplina: 0.3,
+  },
+  "Organizar rotina / casa": {
+    organizacao: 1.0,
+    disciplina: 0.6,
+  },
+  "Socializar / networking": {
+    social: 1.0,
+    energia: 0.4,
+  },
+  "Trabalho profundo": {
+    foco: 1.0,
+    disciplina: 0.8,
+    estudo: 0.4,
+  },
+};
+
 const SKILLS = ["foco","estudo","disciplina","organizacao","saude","energia","criatividade","social"];
+const MAX_LEVEL = 20;
+
+// ===== Conquistas (localStorage) =====
+const ACHIEVEMENTS = [
+  { id: "first_activity", text: "Primeira atividade concluída" },
+  { id: "focus_10", text: "10 atividades de foco" },
+  { id: "study_5", text: "5 dias estudando" },
+];
 
 function getToken() {
   return localStorage.getItem(TOKEN_KEY);
@@ -117,15 +170,75 @@ async function apiPut(url, body) {
   return data;
 }
 
-function showXP(text) {
+function showXP(textOrAmount) {
+  const text = typeof textOrAmount === "number" ? `+${textOrAmount} XP` : String(textOrAmount);
+
+  const el = document.createElement("div");
+  el.className = "xp-float";
+  el.innerText = text;
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 1300);
+
   if (!xpModal) return;
   xpText.textContent = text;
+  xpModal.classList.remove("hidden");
+}
+
+function showXPHTML(html) {
+  const el = document.createElement("div");
+  el.className = "xp-float";
+  el.innerHTML = html;
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 1500);
+
+  if (!xpModal) return;
+  xpText.innerHTML = html;
   xpModal.classList.remove("hidden");
 }
 
 function hideXP() {
   if (!xpModal) return;
   xpModal.classList.add("hidden");
+}
+
+function unlockAchievement(id) {
+  const unlocked = JSON.parse(localStorage.getItem("achievements") || "[]");
+  if (unlocked.includes(id)) return;
+
+  unlocked.push(id);
+  localStorage.setItem("achievements", JSON.stringify(unlocked));
+  showAchievementPopup(id);
+}
+
+function showAchievementPopup(id) {
+  const map = {
+    first_activity: "🏆 Primeira atividade!",
+    focus_10: "🧠 Foco nível mestre!",
+    study_5: "📚 Consistência nos estudos!",
+  };
+
+  const el = document.createElement("div");
+  el.className = "xp-float";
+  el.innerText = map[id] || "🏆 Conquista desbloqueada!";
+  document.body.appendChild(el);
+
+  setTimeout(() => el.remove(), 1500);
+}
+
+function countActivitiesBySkill(state, skillId) {
+  return state?.log?.filter((l) => l.skill === skillId).length || 0;
+}
+
+function countStudyDays(state) {
+  const days = new Set();
+  for (const l of state?.log || []) {
+    if (l.skill === "estudo") days.add(todayKey(l.at));
+  }
+  return days.size;
+}
+
+function getRadarValue(skill) {
+  return Math.min(MAX_LEVEL, skill.level + (skill.xp / xpToNext(skill.level)));
 }
 
 function skillLabel(id) {
@@ -202,6 +315,42 @@ function addXP(skill, amount) {
     skill.xp -= xpToNext(skill.level);
     skill.level += 1;
   }
+}
+
+function aplicarXPAtividade(atividadeLabel, xpBase) {
+  const skills = activitySkillMap[atividadeLabel];
+  if (!skills) {
+    console.warn("Atividade sem skills mapeadas:", atividadeLabel);
+    return { total: 0, gainedBySkill: {} };
+  }
+
+  let total = 0;
+  const gainedBySkill = {};
+  const ganhos = [];
+
+  for (const [skillId, peso] of Object.entries(skills)) {
+    const xpFinal = Math.round(xpBase * peso);
+    if (xpFinal <= 0) continue;
+    const skillState = state?.skills?.[skillId];
+    if (!skillState) continue;
+    addXP(skillState, xpFinal);
+    gainedBySkill[skillId] = xpFinal;
+    total += xpFinal;
+    ganhos.push({ skill: skillId, xp: xpFinal });
+  }
+
+  mostrarResumoXP(ganhos);
+
+  return { total, gainedBySkill };
+}
+
+function mostrarResumoXP(ganhos) {
+  if (!ganhos?.length) return;
+  const mensagem = ganhos
+    .map(g => `+${g.xp} XP em ${skillLabel(g.skill)}`)
+    .join("<br>");
+
+  showXPHTML(`<strong>✨ Atividade concluída</strong><br><br>${mensagem}`);
 }
 
 function computeXP({ minutes, difficulty, noDistraction }) {
@@ -341,8 +490,7 @@ function drawRadar(state) {
   const r = Math.min(w, h) * 0.38;
 
   const ids = Object.keys(state.skills);
-  const levels = ids.map((id) => state.skills[id].level);
-  const maxLevel = Math.max(1, ...levels);
+  const values = ids.map((id) => getRadarValue(state.skills[id]));
 
   ctx.strokeStyle = "rgba(255,255,255,0.12)";
   ctx.lineWidth = 1;
@@ -364,11 +512,28 @@ function drawRadar(state) {
     ctx.stroke();
   }
 
+  const labelRadius = r + 18;
+  ctx.font = "13px Segoe UI, Arial, sans-serif";
+  for (let i = 0; i < n; i++) {
+    const id = ids[i];
+    const ang = -Math.PI / 2 + (i * 2 * Math.PI) / n;
+    const lx = cx + labelRadius * Math.cos(ang);
+    const ly = cy + labelRadius * Math.sin(ang);
+
+    const cos = Math.cos(ang);
+    ctx.textAlign = cos > 0.2 ? "left" : cos < -0.2 ? "right" : "center";
+    ctx.textBaseline = "middle";
+
+    const highlight = radarHighlightSkills?.includes(id);
+    ctx.fillStyle = highlight ? "#2cff88" : "#bbb";
+    ctx.fillText(skillLabel(id), lx, ly);
+  }
+
   const pts = [];
   for (let i = 0; i < n; i++) {
     const id = ids[i];
-    const lvl = state.skills[id].level;
-    const t = Math.max(0.05, lvl / maxLevel);
+    const value = values[i];
+    const t = Math.max(0.05, value / MAX_LEVEL);
     const ang = -Math.PI / 2 + (i * 2 * Math.PI) / n;
     pts.push([cx + r * t * Math.cos(ang), cy + r * t * Math.sin(ang)]);
   }
@@ -567,6 +732,17 @@ async function loadRank() {
 // ===== Boot =====
 let state = null;
 let me = null;
+let radarHighlightSkills = null;
+let radarHighlightTimer = null;
+
+function setRadarHighlight(skillIds) {
+  radarHighlightSkills = Array.isArray(skillIds) ? skillIds : null;
+  if (radarHighlightTimer) clearTimeout(radarHighlightTimer);
+  radarHighlightTimer = setTimeout(() => {
+    radarHighlightSkills = null;
+    if (state) drawRadar(state);
+  }, 2000);
+}
 
 async function boot() {
   const token = getToken();
@@ -650,9 +826,8 @@ btnComplete?.addEventListener("click", async () => {
   const difficulty = difficultyEl?.value || "facil";
   const noDistraction = (nodEl?.value || "nao") === "sim";
 
-  const gained = computeXP({ minutes, difficulty, noDistraction });
-
-  addXP(state.skills[skill], gained);
+  const xpBase = computeXP({ minutes, difficulty, noDistraction });
+  const { total: gained, gainedBySkill } = aplicarXPAtividade(activity.label, xpBase);
 
   const dk = todayKey();
   const prev = Number(state.dailyEarned[dk]);
@@ -666,13 +841,29 @@ btnComplete?.addEventListener("click", async () => {
     difficulty,
     noDistraction,
     gained,
+    gainedBySkill,
   };
   state.log.push(entry);
 
   updateQuestsWithActivity(state, dk, entry);
 
+  unlockAchievement("first_activity");
+
+  const grownSkills = Object.keys(gainedBySkill || {});
+  if (grownSkills.length) setRadarHighlight(grownSkills);
+
+  const totalFoco = countActivitiesBySkill(state, "foco");
+  if (activity.skill === "foco" && totalFoco >= 10) {
+    unlockAchievement("focus_10");
+  }
+
+  const diasEstudo = countStudyDays(state);
+  if (activity.skill === "estudo" && diasEstudo >= 5) {
+    unlockAchievement("study_5");
+  }
+
   render(state, me?.username);
-  showXP(`+${gained} XP em ${skillLabel(skill)}!`);
+  // popup já exibido em mostrarResumoXP()
 
   try { await saveState(state); } catch (e) { console.error(e); }
 });
