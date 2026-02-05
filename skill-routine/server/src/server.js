@@ -499,61 +499,36 @@ app.get("/login", (req, res) => res.sendFile(path.join(ROOT_DIR, "login.html")))
 app.get("/app", (req, res) => res.sendFile(path.join(ROOT_DIR, "app.html")));
 
 // ===== Start server =====
-const HOST = process.env.HOST || "0.0.0.0";
-const HTTPS_KEY_PATH =
-  process.env.HTTPS_KEY || path.join(__dirname, "..", "certs", "key.pem");
-const HTTPS_CERT_PATH =
-  process.env.HTTPS_CERT || path.join(__dirname, "..", "certs", "cert.pem");
 
-function getLanAddresses() {
-  const nets = os.networkInterfaces();
-  const results = [];
+// PRODUÇÃO (Render) → SEMPRE HTTP simples
+if (process.env.NODE_ENV === "production") {
+  const PORT = process.env.PORT || 3000;
 
-  for (const name of Object.keys(nets)) {
-    for (const net of nets[name] || []) {
-      if (net.family === "IPv4" && !net.internal) results.push(net.address);
-    }
-  }
-
-  return Array.from(new Set(results));
-}
-
-function logLanUrls(port, protocol) {
-  const lanIps = getLanAddresses();
-  if (lanIps.length) {
-    console.log("Acesse no celular usando:");
-    for (const ip of lanIps) console.log(`- ${protocol}://${ip}:${port}`);
-  } else {
-    console.log("Não foi possível detectar IPs de rede local.");
-  }
-}
-
-// Em PRODUÇÃO (Render), não tente HTTPS dentro do Node.
-// O Render já fornece HTTPS externamente.
-const isProd = process.env.NODE_ENV === "production";
-
-// HTTPS local só quando explicitamente habilitado
-const wantsHttps =
-  process.env.HTTPS === "true" || process.env.HTTPS === "1";
-
-const hasCerts =
-  fs.existsSync(HTTPS_KEY_PATH) && fs.existsSync(HTTPS_CERT_PATH);
-
-if (!isProd && wantsHttps && hasCerts) {
-  // ===== DEV: HTTPS local =====
-  const key = fs.readFileSync(HTTPS_KEY_PATH);
-  const cert = fs.readFileSync(HTTPS_CERT_PATH);
-
-  https.createServer({ key, cert }, app).listen(PORT, HOST, () => {
-    const localUrl = `https://localhost:${PORT}`;
-    console.log(`Servidor HTTPS (DEV) rodando em ${localUrl} (host: ${HOST})`);
-    logLanUrls(PORT, "https");
-  });
-} else {
-  // ===== PROD (Render) + DEV normal (HTTP) =====
   app.listen(PORT, "0.0.0.0", () => {
-    const localUrl = `http://localhost:${PORT}`;
-    console.log(`🚀 API LevelUpLife rodando na porta ${PORT}`);
-    if (!isProd) logLanUrls(PORT, "http");
+    console.log(`🚀 API LevelUpLife (PROD) rodando na porta ${PORT}`);
   });
+
+} else {
+  // ===== DESENVOLVIMENTO =====
+  const HOST = "0.0.0.0";
+  const HTTPS_KEY_PATH = path.join(__dirname, "..", "certs", "key.pem");
+  const HTTPS_CERT_PATH = path.join(__dirname, "..", "certs", "cert.pem");
+
+  const useHttps =
+    process.env.HTTPS === "true" &&
+    fs.existsSync(HTTPS_KEY_PATH) &&
+    fs.existsSync(HTTPS_CERT_PATH);
+
+  if (useHttps) {
+    const key = fs.readFileSync(HTTPS_KEY_PATH);
+    const cert = fs.readFileSync(HTTPS_CERT_PATH);
+
+    https.createServer({ key, cert }, app).listen(3000, HOST, () => {
+      console.log("🔐 API LevelUpLife DEV HTTPS em https://localhost:3000");
+    });
+  } else {
+    app.listen(3000, HOST, () => {
+      console.log("🌐 API LevelUpLife DEV HTTP em http://localhost:3000");
+    });
+  }
 }
