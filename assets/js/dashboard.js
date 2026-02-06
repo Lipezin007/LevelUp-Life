@@ -191,7 +191,11 @@ function migrateStateSkills(state) {
 async function apiGet(url) {
   const res = await fetch(withApiUrl(url), { headers: { ...authHeaders() } });
   const data = await res.json().catch(() => ({}));
-  if (!res.ok) throw new Error(data.error || "Erro na API");
+  if (!res.ok) {
+    const err = new Error(data.error || "Erro na API");
+    err.status = res.status;
+    throw err;
+  }
   return data;
 }
 
@@ -202,7 +206,11 @@ async function apiPost(url, body) {
     body: JSON.stringify(body),
   });
   const data = await res.json().catch(() => ({}));
-  if (!res.ok) throw new Error(data.error || "Erro na API");
+  if (!res.ok) {
+    const err = new Error(data.error || "Erro na API");
+    err.status = res.status;
+    throw err;
+  }
   return data;
 }
 
@@ -216,8 +224,20 @@ async function apiPut(url, body) {
     body: JSON.stringify(body),
   });
   const data = await res.json().catch(() => ({}));
-  if (!res.ok) throw new Error(data.error || "Erro na API");
+  if (!res.ok) {
+    const err = new Error(data.error || "Erro na API");
+    err.status = res.status;
+    throw err;
+  }
   return data;
+}
+
+function showServerSleeping() {
+  document.getElementById("serverSleep")?.classList.remove("hidden");
+}
+
+function hideServerSleeping() {
+  document.getElementById("serverSleep")?.classList.add("hidden");
 }
 
 function showXP(textOrAmount) {
@@ -794,7 +814,7 @@ function setRadarHighlight(skillIds) {
   }, 2000);
 }
 
-async function boot() {
+async function boot(retry = 0) {
   const token = getToken();
   if (!token) {
    window.location.replace("login.html");
@@ -838,11 +858,24 @@ async function boot() {
     buildRankSkillSelect();
     await loadRank();
 
+    hideServerSleeping();
+
   } catch (e) {
-    console.error(e);
-    localStorage.removeItem(TOKEN_KEY);
-    sessionStorage.removeItem(TOKEN_KEY);
-    window.location.replace("login.html");
+    console.warn("Boot falhou:", e);
+
+    if (e?.status === 401 || e?.status === 403) {
+      localStorage.removeItem(TOKEN_KEY);
+      sessionStorage.removeItem(TOKEN_KEY);
+      window.location.replace("login.html");
+      return;
+    }
+
+    if (retry < 3) {
+      showServerSleeping();
+      setTimeout(() => boot(retry + 1), 2000);
+    } else {
+      alert("Servidor demorou para responder. Tente novamente.");
+    }
   }
 }
 

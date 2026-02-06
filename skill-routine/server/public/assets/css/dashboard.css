@@ -191,6 +191,19 @@ button.danger{
   box-shadow: 0 18px 60px rgba(0,0,0,0.65);
 }
 
+#serverSleep{
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 18px;
+}
+
+#serverSleep.hidden{ display: none; }
+
 .modal-box h3{ margin: 0 0 10px; }
 .personal-rank{
   min-width: 220px;
