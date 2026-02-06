@@ -22,7 +22,7 @@ const TOKEN_KEY = "skillRoutine_token";
 
 /* ✅ CORREÇÃO 1: API_URL não pode ser window.location.origin no GitHub Pages */
 const API_URL =
-  window.location.hostname.includes("onrender.com")
+  window.location.hostname.endsWith("onrender.com")
     ? window.location.origin
     : API_BASE;
 
