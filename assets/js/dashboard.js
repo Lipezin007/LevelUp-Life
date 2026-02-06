@@ -23,8 +23,8 @@ const xpModal = $("xpModal");
 const xpText = $("xpText");
 const xpOk = $("xpOk");
 
-const TOKEN_KEY = "skillRoutine_token";
 const API_BASE = "https://levelup-life-ncrx.onrender.com";
+const TOKEN_KEY = "skillRoutine_token";
 
 const API_URL =
   window.location.hostname.endsWith("onrender.com")
@@ -36,8 +36,6 @@ function withApiUrl(path) {
   if (path.startsWith("http://") || path.startsWith("https://")) return path;
   return `${API_URL}${path.startsWith("/") ? "" : "/"}${path}`;
 }
-
-
 
 // ===== Amigos (UI) =====
 const friendNickEl = $("friendNick");
