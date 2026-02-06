@@ -993,15 +993,10 @@ document.addEventListener("click", async (e) => {
       await apiPost("/api/friends/respond", { requestId: id, action: "accept" });
       await refreshFriends();
     } catch (err) {
-      console.error("Erro no boot:", e);
+      setFriendsMsg(err.message);
+    }
+  }
 
-      if (e?.status === 401 || e?.status === 403 || e?.message?.includes("401") || e?.message?.includes("Unauthorized")) {
-        localStorage.removeItem(TOKEN_KEY);
-        sessionStorage.removeItem(TOKEN_KEY);
-        window.location.replace("login.html");
-      } else {
-        alert("Servidor acordando, tente novamente em alguns segundos.");
-      }
   if (t?.dataset?.reject) {
     const id = Number(t.dataset.reject);
     try {
