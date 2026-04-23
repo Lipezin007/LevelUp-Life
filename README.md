@@ -167,9 +167,9 @@ http://localhost:3000
 
 ## 👨‍💻 Autor
 
-**Felippe Pedroso**
+**Felippe Pedroso e Henrique Tavares**
 
-🔗 GitHub: https://github.com/Lipezin007
+🔗 GitHub: https://github.com/Lipezin007 e https://github.com/Henrizinn1006  
 
 ---
 
