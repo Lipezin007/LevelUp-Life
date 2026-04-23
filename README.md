@@ -9,12 +9,19 @@ O usuário registra atividades diárias e ganha XP, evoluindo em diferentes áre
 O LevelUp Life transforma sua rotina em um sistema de progresso, parecido com um RPG:
 
 🎯 Cada atividade gera XP
+
 📈 Cada skill evolui com o tempo
+
 📅 Quests diárias incentivam consistência
+
 🏆 Sistema de conquistas
+
 🤝 Sistema de amigos
+
 🥇 Ranking global por habilidade
+
 ⚙️ Tecnologias
+
 Frontend
 HTML5
 CSS3
