@@ -29,19 +29,6 @@ bcryptjs (hash de senha)
 Deploy
 Render (backend)
 GitHub (versionamento)
-📂 Estrutura do Projeto
-skill-routine/
- ├── server/
- │   ├── src/
- │   │   └── server.js
- │   ├── public/
- │   │   ├── app.html
- │   │   ├── login.html
- │   │   └── assets/
- │   │       ├── css/
- │   │       ├── js/
- │   │       └── img/
- │   └── db.js
 🔐 Autenticação
 Login com email e senha
 Token JWT armazenado no browser
