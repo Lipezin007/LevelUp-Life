@@ -23,49 +23,93 @@ O LevelUp Life transforma sua rotina em um sistema de progresso, parecido com um
 ⚙️ Tecnologias
 
 Frontend
+
 HTML5
+
 CSS3
+
 JavaScript (Vanilla)
+
 Canvas API (Radar de skills)
+
 Backend
+
 Node.js
+
 Express
+
 SQLite
+
 JWT (autenticação)
+
 bcryptjs (hash de senha)
+
 Deploy
+
 Render (backend)
+
 GitHub (versionamento)
+
 🔐 Autenticação
+
 Login com email e senha
+
 Token JWT armazenado no browser
+
 Rotas protegidas com middleware
+
 📡 Principais Endpoints
+
 Auth
+
 POST /auth/register
+
 POST /auth/login
+
 GET  /auth/me
+
 Estado do usuário
+
 GET  /api/state
+
 PUT  /api/state
+
 Amigos
+
 GET  /api/friends
+
 GET  /api/friends/requests
+
 POST /api/friends/request
+
 POST /api/friends/respond
+
 Ranking
+
 GET /api/rank/skills
+
 🎮 Funcionalidades
+
 ✅ Sistema de XP por atividade
+
 ✅ Múltiplas skills (vida real)
+
 ✅ Radar visual de progresso
+
 ✅ Quests diárias
+
 ✅ Sistema de conquistas
+
 ✅ Histórico de atividades
+
 ✅ Sistema de amigos
+
 ✅ Ranking global
+
 🧪 Como rodar localmente
+
 # entrar na pasta do servidor
+
 cd skill-routine/server
 
 # instalar dependências
