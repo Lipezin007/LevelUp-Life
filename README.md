@@ -1,151 +1,178 @@
-🚀 LevelUp Life
+# 🚀 LevelUp Life
 
-Aplicação web gamificada para desenvolvimento pessoal baseada em hábitos e skills.
+> Transforme sua rotina em um sistema de evolução — como um RPG da vida real.
 
-O usuário registra atividades diárias e ganha XP, evoluindo em diferentes áreas da vida como disciplina, inteligência, saúde e produtividade.
+O **LevelUp Life** é uma aplicação web gamificada que ajuda usuários a desenvolver disciplina, foco e consistência através de um sistema de progresso baseado em XP, níveis e conquistas.
 
-🧠 Conceito
+---
 
-O LevelUp Life transforma sua rotina em um sistema de progresso, parecido com um RPG:
+## ✨ Visão do Produto
 
-🎯 Cada atividade gera XP
+A ideia é simples:
 
-📈 Cada skill evolui com o tempo
+> Se jogos conseguem manter pessoas engajadas por horas, por que não aplicar essa lógica na vida real?
 
-📅 Quests diárias incentivam consistência
+O LevelUp Life transforma tarefas do dia a dia em progresso mensurável:
 
-🏆 Sistema de conquistas
+* 🎯 Ações viram XP
+* 📈 XP vira evolução
+* 🧠 Evolução vira resultado real
 
-🤝 Sistema de amigos
+---
 
-🥇 Ranking global por habilidade
+## 🖥️ Demonstração
 
-⚙️ Tecnologias
+🔗 **App online:**
+https://levelup-life-ncrx.onrender.com
 
-Frontend
+> ⚠️ O servidor pode demorar alguns segundos para iniciar (Render free tier)
 
-HTML5
+---
 
-CSS3
+## 🧠 Principais Features
 
-JavaScript (Vanilla)
+* 🔐 **Autenticação segura (JWT)**
+* 📊 **Sistema de Skills (nível + XP)**
+* 🎮 **Gamificação completa da rotina**
+* 📅 **Quests diárias dinâmicas**
+* 🏆 **Sistema de conquistas**
+* 📈 **Radar visual de progresso (Canvas)**
+* 🤝 **Sistema de amigos**
+* 🥇 **Ranking global por skill**
+* 💾 **Persistência de estado por usuário**
 
-Canvas API (Radar de skills)
+---
 
-Backend
+## 🏗️ Arquitetura
 
-Node.js
+### Frontend
 
-Express
+* HTML + CSS + JavaScript (Vanilla)
+* Canvas API (visualização de skills)
+* Estrutura modular (dashboard/login separados)
 
-SQLite
+### Backend
 
-JWT (autenticação)
+* Node.js + Express
+* SQLite (persistência leve e eficiente)
+* JWT para autenticação
+* bcrypt para segurança de senha
 
-bcryptjs (hash de senha)
+### Infra
 
-Deploy
+* Deploy via Render
+* Versionamento com GitHub
 
-Render (backend)
+---
 
-GitHub (versionamento)
+## 📂 Estrutura do Projeto
 
-🔐 Autenticação
+```
+skill-routine/
+ ├── server/
+ │   ├── src/
+ │   │   └── server.js
+ │   ├── public/
+ │   │   ├── app.html
+ │   │   ├── login.html
+ │   │   └── assets/
+ │   │       ├── css/
+ │   │       ├── js/
+ │   │       └── img/
+ │   └── db.js
+```
 
-Login com email e senha
+---
 
-Token JWT armazenado no browser
+## 🔐 Fluxo de Autenticação
 
-Rotas protegidas com middleware
+1. Usuário faz login/registro
+2. Backend gera JWT
+3. Token é armazenado no browser
+4. Rotas protegidas usam middleware `auth`
+5. Dados do usuário são carregados via `/auth/me`
 
-📡 Principais Endpoints
+---
 
-Auth
+## 📡 API (Resumo)
 
+### Auth
+
+```
 POST /auth/register
-
 POST /auth/login
-
 GET  /auth/me
+```
 
-Estado do usuário
+### Estado
 
+```
 GET  /api/state
-
 PUT  /api/state
+```
 
-Amigos
+### Social
 
+```
 GET  /api/friends
-
 GET  /api/friends/requests
-
 POST /api/friends/request
-
 POST /api/friends/respond
+```
 
-Ranking
+### Ranking
 
+```
 GET /api/rank/skills
+```
 
-🎮 Funcionalidades
+---
 
-✅ Sistema de XP por atividade
+## 🎯 Diferenciais do Projeto
 
-✅ Múltiplas skills (vida real)
+* 💡 Aplicação de **gamificação na vida real**
+* 🧠 Modelo de progresso baseado em múltiplas habilidades
+* ⚡ Backend simples, eficiente e escalável
+* 🎨 Visual limpo com feedback imediato (UX focado em motivação)
+* 🔄 Estado persistente por usuário
 
-✅ Radar visual de progresso
+---
 
-✅ Quests diárias
+## 🧪 Rodando localmente
 
-✅ Sistema de conquistas
-
-✅ Histórico de atividades
-
-✅ Sistema de amigos
-
-✅ Ranking global
-
-🧪 Como rodar localmente
-
-# entrar na pasta do servidor
-
+```bash
 cd skill-routine/server
-
-# instalar dependências
 npm install
-
-# rodar servidor
 npm start
+```
 
 Acesse:
 
+```
 http://localhost:3000
-🌍 Deploy
+```
 
-Backend hospedado no Render:
+---
 
-https://levelup-life-ncrx.onrender.com
-🧩 Roadmap (futuro)
+## 🚧 Roadmap
 
-Notificações
+* [ ] App mobile (React Native / Expo)
+* [ ] Sistema de streak (consistência diária)
+* [ ] Notificações inteligentes
+* [ ] Dashboard de métricas
+* [ ] Integração com calendário
+* [ ] Sistema de metas personalizadas
 
-App mobile (React Native / Expo)
+---
 
-Sistema de streak (sequência diária)
+## 👨‍💻 Autor
 
-Dark mode aprimorado
+**Felippe Pedroso**
 
-Dashboard analytics
+🔗 GitHub: https://github.com/Lipezin007
 
-Integração com calendário
+---
 
-👨‍💻 Autor
+## 📄 Licença
 
-Desenvolvido por Felippe Pedroso
-
-GitHub: https://github.com/Lipezin007
-
-📄 Licença
-
-Este projeto está sob a licença MIT.
+MIT License
