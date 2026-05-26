@@ -29,6 +29,26 @@ https://levelup-life-ncrx.onrender.com
 
 ---
 
+## 🖼️ Prints do Projeto
+
+### Tela de Login
+
+![Tela de Login](./skill-routine/server/public/assets/img/print-login.png)
+
+### Dashboard Principal
+
+![Dashboard Principal](./skill-routine/server/public/assets/img/print-dashboard.png)
+
+### Sistema de Skills
+
+![Sistema de Skills](./skill-routine/server/public/assets/img/print-skills.png)
+
+### Quests Diárias
+
+![Quests Diárias](./skill-routine/server/public/assets/img/print-quests.png)
+
+---
+
 ## 🧠 Principais Features
 
 * 🔐 **Autenticação segura (JWT)**
