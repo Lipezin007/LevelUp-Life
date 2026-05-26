@@ -43,10 +43,6 @@ https://levelup-life-ncrx.onrender.com
 
 ![Sistema de Skills](./skill-routine/server/public/assets/img/print-skills.png)
 
-### Quests Diárias
-
-![Quests Diárias](./skill-routine/server/public/assets/img/print-quests.png)
-
 ---
 
 ## 🧠 Principais Features
