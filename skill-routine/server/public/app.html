@@ -16,10 +16,12 @@
 <body>
   <header class="topbar">
     <div class="topbar-inner">
-      <div class="topbar-side"></div>
+      <div class="topbar-side">
+        <img src="assets/img/logo.png" alt="Skill Routine" class="app-logo-small" />
+      </div>
 
       <div class="topbar-center">
-        <img src="assets/img/logo.png" alt="Skill Routine" class="app-logo" />
+        <span id="userNameTopbar" class="user-header"></span>
       </div>
 
       <div class="topbar-side right">
@@ -28,134 +30,137 @@
     </div>
   </header>
 
-  <div class="grid" style="margin-top:14px;">
-    <div class="card">
-      <div class="row between" style="align-items:flex-start;">
-        <div>
-          <h2 style="margin:0 0 6px;">Registrar atividade</h2>
-          <div class="muted">
-            Gamificado • XP por atividade • níveis por skill • quests diárias
+  <div class="main-container">
+    <!-- ÁREA PRINCIPAL ESQUERDA - "HOJE" -->
+    <div class="main-content">
+      <div class="card">
+        <div class="section-header">
+          <h2 style="margin:0;">📝 Registrar atividade</h2>
+          <div class="muted small">Gamificado • XP por atividade • quests diárias</div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Atividade</label>
+            <select id="activity"></select>
+          </div>
+          <div class="form-group">
+            <label>Minutos</label>
+            <input id="minutes" type="number" min="1" value="30" />
+          </div>
+          <div class="form-group">
+            <label>Dificuldade</label>
+            <select id="difficulty">
+              <option value="facil">Fácil</option>
+              <option value="medio">Médio</option>
+              <option value="dificil">Difícil</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Sem distração?</label>
+            <select id="nodistraction">
+              <option value="nao">Não</option>
+              <option value="sim">Sim</option>
+            </select>
+          </div>
+          <div class="form-group-full">
+            <button class="primary full" id="btnComplete">✨ Concluir (+XP)</button>
           </div>
         </div>
-
-        <!-- Rank pessoal -->
-        <div class="personal-rank" id="personalRank"></div>
       </div>
 
-      <div class="hr"></div>
-
-      <div class="row">
-        <div>
-          <label>Atividade</label><br/>
-          <select id="activity"></select>
-        </div>
-        <div>
-          <label>Minutos</label><br/>
-          <input id="minutes" type="number" min="1" value="30" />
-        </div>
-        <div>
-          <label>Dificuldade</label><br/>
-          <select id="difficulty">
-            <option value="facil">Fácil</option>
-            <option value="medio">Médio</option>
-            <option value="dificil">Difícil</option>
-          </select>
-        </div>
-        <div>
-          <label>Sem distração?</label><br/>
-          <select id="nodistraction">
-            <option value="nao">Não</option>
-            <option value="sim">Sim</option>
-          </select>
-        </div>
-        <div class="mt18">
-          <button class="primary" id="btnComplete">Concluir (+XP)</button>
-        </div>
-      </div>
-
-      <div class="hr"></div>
-
-      <div class="row between">
-        <div>
-          <strong>Resumo do dia</strong>
+      <div class="card">
+        <div class="section-header">
+          <h3 style="margin:0;">📊 Resumo do dia</h3>
           <div class="muted" id="dayInfo"></div>
         </div>
-        <div class="row">
+
+        <div class="day-actions">
           <button id="btnNewQuests">Gerar quests do dia</button>
-          <button class="danger" id="btnReset">Resetar tudo</button>
+          <button id="btnReset" class="text-danger">↻ Resetar tudo</button>
         </div>
       </div>
 
-      <div class="hr"></div>
+      <div class="card">
+        <div class="section-header">
+          <h3 style="margin:0;">✅ Quests diárias</h3>
+        </div>
+        <div class="quests" id="quests"></div>
+      </div>
 
-      <h3 style="margin:0 0 8px;">Quests diárias</h3>
-      <div class="quests" id="quests"></div>
-
-      <div class="hr"></div>
-
-      <h3 style="margin:0 0 8px;">Histórico</h3>
-      <div class="log" id="log"></div>
+      <div class="card">
+        <div class="section-header">
+          <h3 style="margin:0;">📜 Histórico recente</h3>
+        </div>
+        <div class="log log-compact" id="log"></div>
+      </div>
     </div>
 
-    <div class="card">
-      <!-- AMIGOS -->
-      <h2 style="margin:0 0 10px;">Amigos</h2>
+    <!-- SIDEBAR DIREITA - ABAS -->
+    <div class="sidebar">
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="ranking">🏆 Ranking</button>
+        <button class="tab-btn" data-tab="amigos">👥 Amigos</button>
+        <button class="tab-btn" data-tab="skills">⭐ Skills</button>
+      </div>
 
-      <div class="row" style="gap:10px; align-items:flex-end;">
-        <div style="flex:1;">
-          <label>Adicionar por nick</label><br/>
-          <input id="friendNick" placeholder="ex: felippe01" maxlength="20" />
-          <div class="muted" style="margin-top:6px;">
-            Digite pelo menos 2 letras para aparecer a lista.
+      <!-- TAB: RANKING -->
+      <div id="tab-ranking" class="tab-content card active">
+        <div class="row between" style="align-items:flex-end; gap: 12px;">
+          <div style="flex:1;">
+            <label>Skill</label>
+            <select id="rankSkill"></select>
           </div>
+          <button id="btnRefreshRank" class="compact">Atualizar</button>
+        </div>
+        <div class="muted" id="rankMsg" style="margin-top:12px;"></div>
+        <div class="log" id="rankList" style="margin-top:12px;"></div>
+      </div>
+
+      <!-- TAB: AMIGOS -->
+      <div id="tab-amigos" class="tab-content card hidden">
+        <div class="section-header">
+          <h3 style="margin:0;">Adicionar amigos</h3>
         </div>
 
-        <button class="primary" id="btnAddFriend">Adicionar</button>
-      </div>
-
-      <div id="friendSuggestions" class="suggestions"></div>
-      <div class="muted" id="friendsMsg" style="margin-top:8px;"></div>
-
-      <div class="hr"></div>
-
-      <h3 style="margin:0 0 8px;">Pedidos</h3>
-      <div class="log" id="friendRequests"></div>
-
-      <div class="hr"></div>
-
-      <h3 style="margin:0 0 8px;">Meus amigos</h3>
-      <div class="log" id="friendsList"></div>
-
-      <div class="hr"></div>
-
-      <!-- RANKING -->
-      <h2 style="margin:0 0 10px;">Ranking</h2>
-
-      <div class="row between" style="align-items:flex-end;">
-        <div style="flex:1;">
-          <label>Skill</label><br/>
-          <select id="rankSkill"></select>
+        <div class="friend-input-row">
+          <input id="friendNick" placeholder="ex: user01" maxlength="20" />
+          <button class="primary compact" id="btnAddFriend">+</button>
         </div>
-        <button id="btnRefreshRank">Atualizar</button>
+        <div class="muted small" style="margin-top:8px;">
+          Digite pelo menos 2 letras para aparecer sugestões
+        </div>
+
+        <div id="friendSuggestions" class="suggestions" style="margin-top:12px;"></div>
+        <div class="muted" id="friendsMsg" style="margin-top:8px;"></div>
+
+        <div style="margin-top:24px;">
+          <h4 style="margin:0 0 10px; font-size:14px;">Pedidos pendentes</h4>
+          <div class="log log-compact" id="friendRequests"></div>
+        </div>
+
+        <div style="margin-top:16px;">
+          <h4 style="margin:0 0 10px; font-size:14px;">Meus amigos</h4>
+          <div class="log log-compact" id="friendsList"></div>
+        </div>
       </div>
 
-      <div class="muted" id="rankMsg" style="margin-top:8px;"></div>
-      <div class="log" id="rankList" style="margin-top:10px;"></div>
-
-      <div class="hr"></div>
-
-      <!-- SKILLS -->
-      <h2 style="margin:0 0 8px;">Skills</h2>
-      <canvas
-        id="radar"
-        width="360"
-        height="360"
-        style="width:100%; max-width:420px; display:block; margin: 6px auto 12px;">
-      </canvas>
-      <div class="muted center" style="margin-bottom:10px;">
-        Radar (normalizado pelo nível mais alto)
+      <!-- TAB: SKILLS -->
+      <div id="tab-skills" class="tab-content card hidden">
+        <div class="section-header">
+          <h3 style="margin:0;">Progresso por skill</h3>
+        </div>
+        <canvas
+          id="radar"
+          width="280"
+          height="280"
+          style="width:100%; max-width:300px; display:block; margin: 12px auto;">
+        </canvas>
+        <div class="muted center small" style="margin-bottom:12px;">
+          Radar (normalizado pelo nível mais alto)
+        </div>
+        <div class="skills log-compact" id="skills"></div>
       </div>
-      <div class="skills" id="skills"></div>
     </div>
   </div>
 
@@ -174,6 +179,29 @@
       <p>Primeiro acesso pode levar alguns segundos…</p>
     </div>
   </div>
+
+  <script type="module">
+    // Sistema de abas
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const tabName = this.dataset.tab;
+        
+        // Remove active de todos os botões e conteúdos
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active', 'hidden'));
+        
+        // Adiciona active ao botão clicado
+        this.classList.add('active');
+        
+        // Mostra o conteúdo correspondente
+        const tabContent = document.getElementById(`tab-${tabName}`);
+        if (tabContent) {
+          tabContent.classList.add('active');
+          tabContent.classList.remove('hidden');
+        }
+      });
+    });
+  </script>
 
   <script type="module" src="assets/js/dashboard.js"></script>
 </body>

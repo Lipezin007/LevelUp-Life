@@ -33,7 +33,7 @@ const friendsListEl = $("friendsList");
 const friendsMsgEl = $("friendsMsg");
 
 // ===== Ranking (UI) =====
-const personalRankEl = $("personalRank");
+const userNameTopbarEl = $("userNameTopbar");
 const rankSkillEl = $("rankSkill");
 const btnRefreshRank = $("btnRefreshRank");
 const rankListEl = $("rankList");
@@ -44,9 +44,12 @@ const API_BASE = "https://levelup-life-ncrx.onrender.com";
 const TOKEN_KEY = "skillRoutine_token";
 
 const API_URL =
-  window.location.hostname.endsWith("onrender.com")
+  window.location.hostname === "localhost" ||
+  window.location.hostname === "127.0.0.1"
     ? window.location.origin
-    : API_BASE;
+    : window.location.hostname.endsWith("onrender.com")
+      ? window.location.origin
+      : API_BASE;
 
 function withApiUrl(path) {
   if (!path) return API_URL;
@@ -257,7 +260,7 @@ function todayKey(ts = Date.now()) {
 
 function defaultState() {
   const skills = {};
-  for (const id of SKILLS) skills[id] = { level: 1, xp: 0 };
+  for (const id of SKILLS) skills[id] = { level: 0, xp: 0 };
 
   return {
     createdAt: Date.now(),
@@ -283,7 +286,7 @@ function migrateStateSkills(state) {
   delete state.skills.estudo;
 
   for (const id of SKILLS) {
-    if (!state.skills[id]) state.skills[id] = { level: 1, xp: 0 };
+    if (!state.skills[id]) state.skills[id] = { level: 0, xp: 0 };
   }
 
   if (Array.isArray(state.log)) {
@@ -349,20 +352,12 @@ function personalTitle(totalLevel) {
 }
 
 function renderPersonalRank(state, username) {
-  if (!personalRankEl) return;
+  if (!userNameTopbarEl) return;
 
   const total = overallLevel(state);
   const t = personalTitle(total);
 
-  const nextText = t.nextMin ? `Próximo: ${t.nextTitle} no nível ${t.nextMin}` : `Topo máximo alcançado`;
-
-  personalRankEl.innerHTML = `
-    <div class="rank-badge">
-      <div class="title">${t.current}</div>
-      <div class="meta">${username ? `@${username} • ` : ""}Nível geral: ${total}</div>
-      <div class="meta">${nextText}</div>
-    </div>
-  `;
+  userNameTopbarEl.innerHTML = `@${username || "User"} • ${t.current} • Nv ${total}`;
 }
 
 // ===== XP/Level =====
@@ -936,14 +931,14 @@ function render(state, username) {
         const pct = Math.min(100, Math.round((s.xp / xpToNext(s.level)) * 100));
         return `
         <div>
-          <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;">
             <div><strong>${skillLabel(id)}</strong></div>
-            <div class="muted">Nv ${s.level}</div>
+            <div class="muted" style="white-space:nowrap;">Nv ${s.level}</div>
           </div>
           <div style="height:8px;border-radius:999px;background:rgba(255,255,255,0.10);margin-top:8px;overflow:hidden;">
             <div style="height:100%;width:${pct}%;background:rgba(0,204,102,0.75);"></div>
           </div>
-          <div class="muted" style="margin-top:6px;">${s.xp}/${xpToNext(s.level)} XP</div>
+          <div class="muted" style="margin-top:6px;font-size:12px;">${s.xp}/${xpToNext(s.level)} XP</div>
         </div>
       `;
       })

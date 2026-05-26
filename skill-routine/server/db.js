@@ -14,6 +14,13 @@ const pool = new Pool({
 });
 
 export async function initDB() {
+
+  // RESET TEMPORÁRIO
+  await pool.query(`DROP TABLE IF EXISTS friend_requests CASCADE`);
+  await pool.query(`DROP TABLE IF EXISTS friends CASCADE`);
+  await pool.query(`DROP TABLE IF EXISTS states CASCADE`);
+  await pool.query(`DROP TABLE IF EXISTS users CASCADE`);
+
   await pool.query(`
     CREATE TABLE IF NOT EXISTS users (
       id SERIAL PRIMARY KEY,

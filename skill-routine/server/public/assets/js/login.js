@@ -27,9 +27,12 @@ const TOKEN_KEY = "skillRoutine_token";
  * usa o origin atual.
  */
 const API_URL =
-  window.location.hostname.endsWith("onrender.com")
+  window.location.hostname === "localhost" ||
+  window.location.hostname === "127.0.0.1"
     ? window.location.origin
-    : API_BASE;
+    : window.location.hostname.endsWith("onrender.com")
+      ? window.location.origin
+      : API_BASE;
 
 function withApiUrl(path) {
   if (!path) return API_URL;
