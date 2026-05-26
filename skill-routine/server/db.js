@@ -1,8 +1,13 @@
 import pkg from "pg";
 const { Pool } = pkg;
 
+const connectionString = process.env.DATABASE_URL?.replace(
+  "?sslmode=require",
+  ""
+);
+
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
+  connectionString,
   ssl: {
     rejectUnauthorized: false,
   },
