@@ -340,8 +340,8 @@ function personalTitle(totalLevel) {
     { min: 70, title: "Elite" },
     { min: 100, title: "Alfa" },
     { min: 130, title: "Lendário" },
-    { min: 170, title: "mestre" },
-    { min: 220, title: "aura ♾️" },
+    { min: 170, title: "Mestre" },
+    { min: 220, title: "Aura ♾️" },
   ];
 
   let best = tiers[0];

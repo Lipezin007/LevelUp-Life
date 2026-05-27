@@ -1,6 +1,6 @@
 {
-  "name": "LifeUp Life",
-  "short_name": "LifeUp",
+  "name": "LevelUp Life",
+  "short_name": "LevelUp",
   "start_url": "/login",
   "display": "standalone",
   "background_color": "#000000",
