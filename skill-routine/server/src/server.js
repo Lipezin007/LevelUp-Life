@@ -90,8 +90,6 @@ async function getAuthedUser(req) {
 }
 
 // ================= BASIC =================
-app.get("/", (req, res) => res.json({ status: "LevelUpLife API ONLINE" }));
-
 app.get("/health", (req, res) => res.json({ ok: true }));
 
 // ================= AUTH ROUTES =================
@@ -333,10 +331,20 @@ app.get("/api/rank/skills", auth, async (req, res) => {
 
 // ================= STATIC =================
 const ROOT = path.join(__dirname, "..", "public");
+
 app.use(express.static(ROOT));
 
-app.get("/login", (_, res) => res.sendFile(path.join(ROOT, "login.html")));
-app.get("/app", (_, res) => res.sendFile(path.join(ROOT, "app.html")));
+app.get("/", (_, res) => {
+  res.sendFile(path.join(ROOT, "login.html"));
+});
+
+app.get("/login", (_, res) => {
+  res.sendFile(path.join(ROOT, "login.html"));
+});
+
+app.get("/app", (_, res) => {
+  res.sendFile(path.join(ROOT, "app.html"));
+});
 
 // ================= START =================
 async function start() {
